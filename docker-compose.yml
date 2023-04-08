@@ -1,0 +1,107 @@
+version: '3'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ms-rabbitmq
+    hostname: rabbitmq
+    volumes:
+      - /var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_USER=user
+      - RABBITMQ_PASS=password
+      - RABBITMQ_HOST=rabbitmq
+    networks:
+      - app-network
+      - postgres-network
+
+  auth:
+    container_name: ms-auth
+    build:
+      context: ./
+      dockerfile: ./apps/auth/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - postgres
+    volumes:
+      - .:/usr/src/app # any change to base folder should be reflected
+      - /usr/src/app/node_modules
+    command: npm run start:dev auth # overrides CMD from dockerfile
+    networks:
+      - app-network
+      - postgres-network
+
+  api:
+    container_name: ms-api-main
+    build:
+      context: ./
+      dockerfile: ./apps/api/Dockerfile
+    ports:
+      - '4000:5000'
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - auth
+    volumes:
+      - .:/usr/src/app # any change to base folder should be reflected
+      - /usr/src/app/node_modules
+    command: npm run start:dev api
+    networks:
+      - app-network
+
+  postgres:
+    container_name: ms-postgres
+    image: postgres
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./sql/postgres/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
+    restart: always
+    networks:
+      - postgres-network
+
+  postgres_admin:
+    container_name: ms-pgagmin
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    ports:
+      - '15432:80'
+    networks:
+      - postgres-network
+
+  redis:
+    container_name: ms-redis
+    image: redis
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASS"
+    env_file:
+      - .env
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis/data:/data
+    networks:
+      - app-network
+      - postgres-network
+
+volumes:
+  ms-postgres:
+networks:
+  postgres-network:
+    driver: bridge
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: '172.20.0.0/16'
