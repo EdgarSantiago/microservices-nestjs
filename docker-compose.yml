@@ -39,7 +39,7 @@ services:
 
   postgres:
     container_name: ms-postgres
-    image: postgres:13
+    image: postgres
     env_file:
       - .env
     ports:
@@ -64,7 +64,7 @@ services:
 
   redis:
     container_name: ms-redis
-    image: redis:6
+    image: redis
     command: /bin/sh -c "redis-server --requirepass $$REDIS_PASS"
     env_file:
       - .env
@@ -82,6 +82,8 @@ services:
     build:
       context: ./
       dockerfile: ./apps/employee/Dockerfile
+    #ports:
+    #  - '5001:5001'
     env_file:
       - .env
     depends_on:
@@ -116,6 +118,8 @@ services:
       - app-network
 
 #config
+volumes:
+  ms-postgres:
 networks:
   postgres-network:
     driver: bridge

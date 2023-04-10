@@ -15,32 +15,32 @@ export class EmployeeEntity {
   phone: string;
 
   @Column()
-  email: string;
-
-  @Column()
   cpf: string;
 
-  @Column()
-  name: string;
-
-  @Column()
-  lastName: string;
-
-  @Column()
-  atv: string;
-
-  @Column()
-  missing: boolean;
-
-  @Column()
-  wageValue: number;
-
-  @Column()
-  paidWages: boolean;
-
-  @Column()
-  enterTime: number;
-
-  @Column()
-  leaveTime: number;
+  //  @Column()
+  //  email: string;
+  //
+  //  @Column()
+  //  name: string;
+  //
+  //  @Column()
+  //  lastName: string;
+  //
+  //  @Column()
+  //  atv: string;
+  //
+  //  @Column()
+  //  missing: boolean;
+  //
+  //  @Column()
+  //  wageValue: number;
+  //
+  //  @Column()
+  //  paidWages: boolean;
+  //
+  //  @Column()
+  //  enterTime: number;
+  //
+  //  @Column()
+  //  leaveTime: number;
 }

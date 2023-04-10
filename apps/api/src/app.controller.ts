@@ -72,65 +72,64 @@ export class AppController {
 
   //Employees
   @Get('employees')
-  async getEmployees(@Body('email') email: string, @Body('cpf') cpf: string) {
+  async getEmployees(@Body('phone') phone: string, @Body('cpf') cpf: string) {
     return this.employeeService.send(
       {
         cmd: 'get-employees',
       },
       {
-        email,
+        phone,
         cpf,
       },
     );
   }
 
   @Get('employees/:id')
-  async getEmployee(@Body('email') email: string, @Body('cpf') cpf: string) {
+  async getEmployee(@Param('id') id: number) {
     return this.employeeService.send(
       {
-        cmd: 'get-employees',
+        cmd: 'get-employee',
       },
       {
-        email,
-        cpf,
+        id,
       },
     );
   }
 
   @Post('employees')
-  async createEmployee(@Body('email') email: string, @Body('cpf') cpf: string) {
+  async createEmployee(@Body('phone') phone: string, @Body('cpf') cpf: string) {
     return this.employeeService.send(
       {
         cmd: 'create-employee',
       },
       {
-        email,
+        phone,
         cpf,
       },
     );
   }
 
   @Put('employees/:id')
-  async updateEmployee(@Body('email') email: string, @Body('cpf') cpf: string) {
+  async updateEmployee(@Body('phone') phone: string, @Body('cpf') cpf: string) {
     return this.employeeService.send(
       {
         cmd: 'update-employee',
       },
       {
-        email,
+        phone,
         cpf,
       },
     );
   }
 
   @Delete('employees/:id')
-  async deleteEmployee(@Body('email') email: string, @Body('cpf') cpf: string) {
+  async deleteEmployee(@Body('phone') phone: string, @Body('cpf') cpf: string) {
     return this.employeeService.send(
       {
         cmd: 'delete-employee',
       },
       {
-        email,
+        phone,
         cpf,
       },
     );

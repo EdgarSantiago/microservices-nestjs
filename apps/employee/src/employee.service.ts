@@ -13,23 +13,22 @@ export class EmployeeService {
   ) {}
 
   // find all
-  getAllEmployess() {
-    return this.employeeRepository.find();
+  async getAllEmployess() {
+    return await this.employeeRepository.find();
   }
 
   // find by id
   async getEmployeeById(id: number) {
-    const employee = await this.employeeRepository.findOne({ where: { id } });
+    const employee = await this.employeeRepository.find({ where: { id: id } });
     if (employee) {
       return employee;
     }
-
     throw new HttpException('EmployeeEntity not found', HttpStatus.NOT_FOUND);
   }
 
   // create
   async createEmployee(employee: NewEmployeeDTO) {
-    const newEmployee = await this.employeeRepository.create(employee);
+    const newEmployee = this.employeeRepository.create(employee);
     await this.employeeRepository.save(newEmployee);
 
     return newEmployee;
