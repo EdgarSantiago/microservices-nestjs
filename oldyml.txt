@@ -39,7 +39,7 @@ services:
 
   postgres:
     container_name: ms-postgres
-    image: postgres:13
+    image: postgres
     env_file:
       - .env
     ports:
@@ -64,7 +64,7 @@ services:
 
   redis:
     container_name: ms-redis
-    image: redis:6
+    image: redis
     command: /bin/sh -c "redis-server --requirepass $$REDIS_PASS"
     env_file:
       - .env
@@ -91,7 +91,7 @@ services:
     volumes:
       - .:/usr/src/app # any change to base folder should be reflected
       - /usr/src/app/node_modules
-    command: npm run start:dev employee # overrides CMD from dockerfile
+    command: npm run start:dev auth # overrides CMD from dockerfile
     networks:
       - app-network
       - postgres-network
@@ -116,6 +116,8 @@ services:
       - app-network
 
 #config
+volumes:
+  ms-postgres:
 networks:
   postgres-network:
     driver: bridge
