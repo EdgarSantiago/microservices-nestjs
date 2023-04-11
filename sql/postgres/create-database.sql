@@ -1,2 +1,2 @@
-create database "messenger-db";
+create database "dashyukon-db";
 

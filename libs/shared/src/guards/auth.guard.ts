@@ -49,10 +49,7 @@ export class AuthGuard implements CanActivate {
         return of(isJwtValid);
       }),
       catchError(() => {
-        throw new RpcException({
-          statusCode: 401,
-          message: 'Você precisa estar logado',
-        });
+        throw new UnauthorizedException('Você precisa estar logado');
       }),
     );
   }

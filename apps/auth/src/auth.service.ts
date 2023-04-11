@@ -36,7 +36,7 @@ export class AuthService implements AuthServiceInterface {
   async findByEmail(email: string): Promise<UserEntity> {
     return this.usersRepository.findByCondition({
       where: { email },
-      select: ['id', 'firstName', 'lastName', 'email', 'password'],
+      select: ['id', 'email', 'password', 'roles'],
     });
   }
 
@@ -49,7 +49,8 @@ export class AuthService implements AuthServiceInterface {
   }
 
   async register(newUser: Readonly<NewUserDTO>): Promise<UserEntity> {
-    const { firstName, lastName, email, password } = newUser;
+    const { email, password, roles } = newUser;
+    console.log(newUser);
 
     const existingUser = await this.findByEmail(email);
 
@@ -60,10 +61,9 @@ export class AuthService implements AuthServiceInterface {
     const hashedPassword = await this.hashPassword(password);
 
     const savedUser = await this.usersRepository.save({
-      firstName,
-      lastName,
       email,
       password: hashedPassword,
+      roles: ['user'],
     });
 
     delete savedUser.password;
@@ -79,7 +79,7 @@ export class AuthService implements AuthServiceInterface {
 
   async validateUser(email: string, password: string): Promise<UserEntity> {
     const user = await this.findByEmail(email);
-
+    console.log(user);
     const doesUserExist = !!user;
 
     if (!doesUserExist) return null;

@@ -24,7 +24,7 @@ export class AppController {
     @Inject('EMPLOYEE_SERVICE') private readonly employeeService: ClientProxy,
   ) {}
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Get('users')
   async getUsers() {
     return this.authService.send(
@@ -37,8 +37,6 @@ export class AppController {
 
   @Post('auth/register')
   async register(
-    @Body('firstName') firstName: string,
-    @Body('lastName') lastName: string,
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
@@ -47,8 +45,6 @@ export class AppController {
         cmd: 'register',
       },
       {
-        firstName,
-        lastName,
         email,
         password,
       },
