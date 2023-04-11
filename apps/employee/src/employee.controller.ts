@@ -47,22 +47,27 @@ export class EmployeeController {
 
   // create employee
   @MessagePattern({ cmd: 'create-employee' })
-  async createEmployee(@Body() employee: NewEmployeeDTO) {
+  async createEmployee(
+    @Payload() employee: NewEmployeeDTO,
+    @Ctx() context: RmqContext,
+  ) {
+    this.sharedService.acknowledgeMessage(context);
     return this.employeeService.createEmployee(employee);
   }
 
-  // update employee
   @MessagePattern({ cmd: 'update-employee' })
   async updatePost(
-    @Param('id') id: string,
-    @Body() employee: UpdateEmployeeDTO,
+    @Payload() employee: UpdateEmployeeDTO,
+    @Ctx() context: RmqContext,
   ) {
-    return this.employeeService.updateEmployee(Number(id), employee);
+    this.sharedService.acknowledgeMessage(context);
+    return this.employeeService.updateEmployee(Number(employee.id), employee);
   }
 
   //delete employee
   @MessagePattern({ cmd: 'delete-employee' })
-  async deleteEmployee(@Param('id') id: string) {
-    this.employeeService.deleteEmployee(Number(id));
+  async deleteEmployee(@Payload('id') id: number, @Ctx() context: RmqContext) {
+    this.sharedService.acknowledgeMessage(context);
+    return this.employeeService.deleteEmployee(Number(id));
   }
 }

@@ -108,14 +108,19 @@ export class AppController {
       },
     );
   }
-
+  //update employee
   @Put('employees/:id')
-  async updateEmployee(@Body('phone') phone: string, @Body('cpf') cpf: string) {
+  async updateEmployee(
+    @Param('id') id: number,
+    @Body('phone') phone: string,
+    @Body('cpf') cpf: string,
+  ) {
     return this.employeeService.send(
       {
         cmd: 'update-employee',
       },
       {
+        id,
         phone,
         cpf,
       },
@@ -123,14 +128,13 @@ export class AppController {
   }
 
   @Delete('employees/:id')
-  async deleteEmployee(@Body('phone') phone: string, @Body('cpf') cpf: string) {
+  async deleteEmployee(@Param('id') id: number) {
     return this.employeeService.send(
       {
         cmd: 'delete-employee',
       },
       {
-        phone,
-        cpf,
+        id,
       },
     );
   }

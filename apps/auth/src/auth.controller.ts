@@ -23,6 +23,7 @@ export class AuthController {
   ) {}
 
   @MessagePattern({ cmd: 'get-users' })
+  @UseGuards(JwtGuard)
   async getUsers(@Ctx() context: RmqContext) {
     this.sharedService.acknowledgeMessage(context);
 

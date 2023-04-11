@@ -99,7 +99,10 @@ export class AuthService implements AuthServiceInterface {
     const user = await this.validateUser(email, password);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new RpcException({
+        statusCode: 401,
+        message: 'Senha ou email incorretos',
+      });
     }
 
     delete user.password;
@@ -111,24 +114,38 @@ export class AuthService implements AuthServiceInterface {
 
   async verifyJwt(jwt: string): Promise<{ user: UserEntity; exp: number }> {
     if (!jwt) {
-      throw new UnauthorizedException();
+      throw new RpcException({
+        statusCode: 401,
+        message: 'Falha da autenticação: Nenhum JWT',
+      });
     }
 
     try {
       const { user, exp } = await this.jwtService.verifyAsync(jwt);
       return { user, exp };
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new RpcException({
+        statusCode: 401,
+        message: 'Falha da autenticação: Invalido ou JWT expirado',
+      });
     }
   }
 
   async getUserFromHeader(jwt: string): Promise<UserJwt> {
-    if (!jwt) return;
+    if (!jwt) {
+      throw new RpcException({
+        statusCode: 401,
+        message: 'Falha da autenticação: Nenhum JWT',
+      });
+    }
 
     try {
       return this.jwtService.decode(jwt) as UserJwt;
     } catch (error) {
-      throw new BadRequestException();
+      throw new RpcException({
+        statusCode: 401,
+        message: 'Falha da autenticação: Invalido ou JWT expirado',
+      });
     }
   }
 }

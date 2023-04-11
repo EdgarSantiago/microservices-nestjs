@@ -5,7 +5,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
 @Injectable()
@@ -44,7 +44,10 @@ export class AuthGuard implements CanActivate {
         return of(isJwtValid);
       }),
       catchError(() => {
-        throw new UnauthorizedException();
+        throw new RpcException({
+          statusCode: 401,
+          message: 'Você precisa estar logado',
+        });
       }),
     );
   }

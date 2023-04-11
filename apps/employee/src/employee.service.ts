@@ -23,6 +23,7 @@ export class EmployeeService {
     if (employee) {
       return employee;
     }
+
     throw new HttpException('EmployeeEntity not found', HttpStatus.NOT_FOUND);
   }
 
@@ -48,10 +49,14 @@ export class EmployeeService {
   }
 
   // delete
-  async deleteEmployee(id: number) {
+  async deleteEmployee(id: number): Promise<string> {
     const deletedEmployee = await this.employeeRepository.delete(id);
-    if (!deletedEmployee.affected) {
-      throw new HttpException('EmployeeEntity not found', HttpStatus.NOT_FOUND);
+    if (deletedEmployee.affected === 0) {
+      throw new HttpException(
+        `Employee with ID ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
     }
+    return `Empregado com ID ${id} foi deletado com sucesso.`;
   }
 }
