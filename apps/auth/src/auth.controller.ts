@@ -6,7 +6,7 @@ import {
   RmqContext,
 } from '@nestjs/microservices';
 
-import { SharedService } from '@app/shared';
+import { AuthGuard, SharedService } from '@app/shared';
 
 import { AuthService } from './auth.service';
 import { NewUserDTO } from './dtos/new-user.dto';
@@ -23,7 +23,6 @@ export class AuthController {
   ) {}
 
   @MessagePattern({ cmd: 'get-users' })
-  @UseGuards(JwtGuard)
   async getUsers(@Ctx() context: RmqContext) {
     this.sharedService.acknowledgeMessage(context);
 

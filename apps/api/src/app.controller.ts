@@ -24,6 +24,7 @@ export class AppController {
     @Inject('EMPLOYEE_SERVICE') private readonly employeeService: ClientProxy,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Get('users')
   async getUsers() {
     return this.authService.send(
