@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { SharedModule } from '@app/shared';
 
 import { AppController } from './app.controller';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from '@app/shared/guards/roles.guard';
 
 @Module({
   imports: [
@@ -13,5 +15,11 @@ import { AppController } from './app.controller';
     ),
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}

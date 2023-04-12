@@ -16,6 +16,8 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 
 import { AuthGuard, UserInterceptor, UserRequest } from '@app/shared';
+import { RolesGuard } from '@app/shared/guards/roles.guard';
+import { Roles } from 'libs/shared/decorator/roles.decorator';
 
 @Controller()
 export class AppController {
@@ -25,6 +27,8 @@ export class AppController {
   ) {}
 
   //@UseGuards(AuthGuard)
+  @UseGuards(RolesGuard)
+  @Roles('user')
   @Get('users')
   async getUsers() {
     return this.authService.send(

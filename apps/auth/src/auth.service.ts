@@ -50,7 +50,6 @@ export class AuthService implements AuthServiceInterface {
 
   async register(newUser: Readonly<NewUserDTO>): Promise<UserEntity> {
     const { email, password, roles } = newUser;
-    console.log(newUser);
 
     const existingUser = await this.findByEmail(email);
 
@@ -79,7 +78,6 @@ export class AuthService implements AuthServiceInterface {
 
   async validateUser(email: string, password: string): Promise<UserEntity> {
     const user = await this.findByEmail(email);
-    console.log(user);
     const doesUserExist = !!user;
 
     if (!doesUserExist) return null;

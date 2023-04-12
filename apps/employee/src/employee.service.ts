@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UpdateEmployeeDTO } from './dtos/update-employee.dto';
 import { NewEmployeeDTO } from './dtos/new-employee.dto';
 import { EmployeeEntity } from './entities/employee.entity';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class EmployeeService {
@@ -14,17 +15,40 @@ export class EmployeeService {
 
   // find all
   async getAllEmployess() {
-    return await this.employeeRepository.find();
+    const employees = await this.employeeRepository.find();
+    if (employees.length > 0) {
+      return employees;
+    }
+    throw new RpcException({
+      statusCode: 404,
+      message: 'Não existe nenhum empregado',
+    });
   }
 
   // find by id
   async getEmployeeById(id: number) {
-    const employee = await this.employeeRepository.find({ where: { id: id } });
+    const employee = await this.employeeRepository.findOne({
+      where: { id: id },
+    });
     if (employee) {
       return employee;
     }
+    throw new RpcException({
+      statusCode: 404,
+      message: 'Empregado não encontrado',
+    });
+  }
 
-    throw new HttpException('EmployeeEntity not found', HttpStatus.NOT_FOUND);
+  // delete
+  async deleteEmployee(id: number): Promise<string> {
+    const deletedEmployee = await this.employeeRepository.delete(id);
+    if (deletedEmployee.affected === 0) {
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Empregado não encontrado',
+      });
+    }
+    return `Empregado com ID ${id} foi deletado com sucesso.`;
   }
 
   // create
@@ -45,18 +69,9 @@ export class EmployeeService {
       return updatedEmployee;
     }
 
-    throw new HttpException('EmployeeEntity not found', HttpStatus.NOT_FOUND);
-  }
-
-  // delete
-  async deleteEmployee(id: number): Promise<string> {
-    const deletedEmployee = await this.employeeRepository.delete(id);
-    if (deletedEmployee.affected === 0) {
-      throw new HttpException(
-        `Employee with ID ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return `Empregado com ID ${id} foi deletado com sucesso.`;
+    throw new RpcException({
+      statusCode: 404,
+      message: 'Empregado não encontrado',
+    });
   }
 }
