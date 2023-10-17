@@ -23,4 +23,3 @@ $ sudo docker compose down
 ## Contato
 
 - Author - [Edgar Santiago](https://www.yukon-project.com/)
-- Website - [https://www.yukon-project.com/](https://www.yukon-project.com/)
